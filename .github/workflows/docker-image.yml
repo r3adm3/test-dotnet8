@@ -1,0 +1,28 @@
+name: Docker Image CI for test-dotnet8
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set Time
+      run: |
+        echo "timestamp=$(date +"%Y-%m-%d-%H-%M-%S")" >> $GITHUB_ENV
+    
+    
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: |
+        docker build . --file Dockerfile --tag daed.duckdns.org:50000/test-dotnet8:$timestamp
+
+    - uses: actions/checkout@v3
+    - name: Push the docker image
+      run: docker push daed.duckdns.org:50000/test-dotnet8:$timestamp
