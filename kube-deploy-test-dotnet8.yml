@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-dotnet8-deployment
+spec:
+  selector:
+    matchLabels:
+      app: test-dotnet8
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: test-dotnet8
+    spec:
+      containers:
+      - name: test-dotnet8
+        image: daed.duckdns.org:50000/test-dotnet8:latest
+        ports:
+        - containerPort: 80
+        imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: test-dotnet8
+  name: test-dotnet8
+spec:
+    ports:
+    - nodePort: 32008 # may need changing if conflicts on target kube cluster
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    selector: 
+      app: test-dotnet8
+    type: NodePort
